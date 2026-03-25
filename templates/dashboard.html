@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f6f8;
+      color: #111;
+      min-height: 100vh;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: #777;
+      margin-top: 5px;
+    }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+      margin-bottom: 20px;
+    }
+
+    /* Info rows */
+    .info {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    .info:last-child {
+      border-bottom: none;
+    }
+
+    .key {
+      color: #777;
+    }
+
+    .val {
+      font-weight: 500;
+    }
+
+    /* Status */
+    .status {
+      color: #2ecc71;
+      font-weight: 500;
+    }
+
+    /* Button */
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 18px;
+      background: #111;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 13px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="header">
+      <h1>Bienvenido, {{ usuario }}</h1>
+      <p>Panel de control</p>
+    </div>
+
+    <div class="card">
+      <div class="info">
+        <span class="key">Estado</span>
+        <span class="val status">● Activo</span>
+      </div>
+
+      <div class="info">
+        <span class="key">Usuario</span>
+        <span class="val">{{ usuario }}</span>
+      </div>
+
+      <div class="info">
+        <span class="key">Acceso</span>
+        <span class="val">Estándar</span>
+      </div>
+
+      <a href="{{ url_for('logout') }}" class="btn">Cerrar sesión</a>
+    </div>
+
+  </div>
+
+</body>
+</html>
