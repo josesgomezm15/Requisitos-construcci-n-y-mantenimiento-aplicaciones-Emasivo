@@ -6,6 +6,7 @@
   <title>Dashboard</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+ 
 
   <style>
     * {
@@ -123,7 +124,7 @@
         <span class="key">Acceso</span>
         <span class="val">Estándar</span>
       </div>
-
+      <a href="{{ url_for('cambiar_password') }}" class="btn">Cambiar contraseña</a>
       <a href="{{ url_for('logout') }}" class="btn">Cerrar sesión</a>
     </div>
 
