@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import re
+import secrets
 from db import get_connection
 
 app = Flask(__name__)
@@ -39,7 +40,6 @@ def login():
         if not valido_p:
             error_password = f"Contraseña inválida: {msg_p}"
 
-        # Si todo está válido → BD
         if valido_u and valido_p:
             try:
                 conn = get_connection()
@@ -66,7 +66,7 @@ def login():
                 conn.close()
 
             except Exception as e:
-                error_usuario = "Error de conexión con la base de datos"
+                error_usuario = "Error en base de datos"
                 print("ERROR LOGIN:", e)
 
     return render_template(
@@ -105,7 +105,6 @@ def cambiar_password():
         actual = request.form.get("actual", "").strip()
         nueva = request.form.get("nueva", "").strip()
 
-        # Validar nueva contraseña
         valido, msg = validar_credencial(nueva)
         if not valido:
             return render_template("cambiar_password.html", mensaje=msg)
@@ -139,10 +138,82 @@ def cambiar_password():
             conn.close()
 
         except Exception as e:
-            mensaje = "❌ Error al actualizar contraseña"
+            mensaje = "❌ Error en base de datos"
             print("ERROR PASSWORD:", e)
 
     return render_template("cambiar_password.html", mensaje=mensaje)
+
+
+@app.route("/recuperar", methods=["GET", "POST"])
+def recuperar():
+    mensaje = ""
+    token_mostrar = ""
+
+    if request.method == "POST":
+        usuario = request.form.get("usuario")
+
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT username FROM usuarios WHERE username = ?",
+            (usuario,)
+        )
+
+        user = cursor.fetchone()
+
+        if user:
+            token = secrets.token_urlsafe(16)
+
+            cursor.execute(
+                "UPDATE usuarios SET token = ? WHERE username = ?",
+                (token, usuario)
+            )
+            conn.commit()
+
+            mensaje = "Copia este token para recuperar tu contraseña"
+            token_mostrar = token
+        else:
+            mensaje = "Usuario no existe"
+
+        conn.close()
+
+    return render_template("recuperar.html", mensaje=mensaje, token=token_mostrar)
+
+
+@app.route("/reset", methods=["GET", "POST"])
+def reset_password():
+    mensaje = ""
+
+    if request.method == "POST":
+        token = request.form.get("token")
+        nueva = request.form.get("nueva")
+
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT username FROM usuarios WHERE token = ?",
+            (token,)
+        )
+
+        user = cursor.fetchone()
+
+        if user:
+            cursor.execute(
+                "UPDATE usuarios SET password = ?, token = NULL WHERE token = ?",
+                (nueva, token)
+            )
+            conn.commit()
+
+            conn.close()
+            return redirect(url_for("login"))
+        else:
+            mensaje = "Token inválido"
+
+        conn.close()
+
+    return render_template("reset.html", mensaje=mensaje)
 
 
 # ▶️ EJECUCIÓN

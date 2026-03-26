@@ -96,6 +96,22 @@
       opacity: 0.85;
     }
 
+    .recuperar {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .recuperar a {
+      font-size: 12px;
+      color: #777;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .recuperar a:hover {
+      color: #111;
+    }
+
     .footer {
       margin-top: 20px;
       font-size: 12px;
@@ -117,6 +133,7 @@
 
     <form method="POST" action="{{ url_for('login') }}">
 
+      <!-- Usuario -->
       <div class="field">
         <label>Usuario</label>
         <input
@@ -131,6 +148,7 @@
         {% endif %}
       </div>
 
+      <!-- Contraseña -->
       <div class="field">
         <label>Contraseña</label>
         <input
@@ -144,11 +162,21 @@
         {% endif %}
       </div>
 
+      <!-- Botón -->
       <button class="btn">Entrar</button>
+
+      <!-- 🔄 Recuperar contraseña -->
+      <div class="recuperar">
+        <a href="{{ url_for('recuperar') }}">
+          ¿Olvidaste tu contraseña?
+        </a>
+      </div>
+
     </form>
 
+    <!-- Footer -->
     <div class="footer">
-      Usuario: <strong>admin123</strong> · Password: <strong>admin123</strong>
+      Usuario: <strong>josegomez98</strong> · Password: <strong>emasivo00005</strong>
     </div>
   </div>
 
