@@ -16,7 +16,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #f5f6f8;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -27,8 +27,8 @@
       background: #ffffff;
       padding: 40px;
       width: 360px;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
     }
 
     h1 {
@@ -40,8 +40,8 @@
 
     .subtitle {
       font-size: 13px;
-      color: #777;
-      margin-bottom: 30px;
+      color: #666;
+      margin-bottom: 25px;
     }
 
     .field {
@@ -50,7 +50,7 @@
 
     label {
       font-size: 12px;
-      color: #555;
+      color: #444;
       display: block;
       margin-bottom: 6px;
     }
@@ -62,11 +62,12 @@
       border-radius: 6px;
       font-size: 14px;
       outline: none;
-      transition: border 0.2s;
+      transition: all 0.2s ease;
     }
 
     input:focus {
-      border-color: #111;
+      border-color: #1e293b;
+      box-shadow: 0 0 0 2px rgba(30, 41, 59, 0.1);
     }
 
     .error-input {
@@ -83,17 +84,17 @@
       width: 100%;
       padding: 12px;
       border: none;
-      background: #111;
+      background: #1e293b;
       color: #fff;
       border-radius: 6px;
       font-size: 14px;
       cursor: pointer;
       margin-top: 10px;
-      transition: opacity 0.2s;
+      transition: all 0.2s;
     }
 
     .btn:hover {
-      opacity: 0.85;
+      background: #0f172a;
     }
 
     .recuperar {
@@ -103,7 +104,7 @@
 
     .recuperar a {
       font-size: 12px;
-      color: #777;
+      color: #666;
       text-decoration: none;
       transition: color 0.2s;
     }
@@ -117,25 +118,29 @@
       font-size: 12px;
       color: #888;
       text-align: center;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
     }
 
     .footer strong {
       color: #111;
       font-weight: 500;
     }
+
   </style>
 </head>
+
 <body>
 
   <div class="card">
-    <h1>Iniciar sesión</h1>
-    <p class="subtitle">Ingresa tus credenciales</p>
+    <h1>EM-PBI</h1>
+    <p class="subtitle"></p>
 
     <form method="POST" action="{{ url_for('login') }}">
 
       <!-- Usuario -->
       <div class="field">
-        <label>Usuario</label>
+        <label>EMAIL</label>
         <input
           type="text"
           name="usuario"
@@ -163,21 +168,21 @@
       </div>
 
       <!-- Botón -->
-      <button class="btn">Entrar</button>
+      <button class="btn">INGRESAR</button>
 
       <!-- 🔄 Recuperar contraseña -->
       <div class="recuperar">
         <a href="{{ url_for('recuperar') }}">
-          ¿Olvidaste tu contraseña?
+          Olvide mi contraseña
         </a>
       </div>
 
     </form>
 
     <!-- Footer -->
-    <div class="footer">
-      Usuario: <strong>josegomez98</strong> · Password: <strong>emasivo00005</strong>
-    </div>
+    <!--<div class="footer">
+     
+    </div>-->
   </div>
 
 </body>
