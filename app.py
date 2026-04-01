@@ -1,10 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import re
 import secrets
+from flask_mail import Mail, Message
 from db import get_connection
 
 app = Flask(__name__)
-app.secret_key = "clave-secreta-segura-cambiar-en-produccion"
+
+# 🔐 CLAVE
+app.secret_key = secrets.token_hex(32)
+
+# 📧 CONFIGURACIÓN MAIL
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = "josesgomezm15@gmail.com"
+app.config["MAIL_PASSWORD"] = "sidr kfzr xfzo cpxk"
+
+mail = Mail(app)
 
 
 # 🔐 VALIDACIÓN
@@ -31,7 +43,6 @@ def login():
         password = request.form.get("password", "").strip()
         usuario_ingresado = usuario
 
-        # Validaciones
         valido_u, msg_u = validar_credencial(usuario)
         if not valido_u:
             error_usuario = f"Usuario inválido: {msg_u}"
@@ -53,7 +64,7 @@ def login():
                 user = cursor.fetchone()
 
                 if user:
-                    db_password = user[1].strip()
+                    db_password = user[1]
 
                     if db_password == password:
                         session["usuario"] = usuario
@@ -121,7 +132,7 @@ def cambiar_password():
             user = cursor.fetchone()
 
             if user:
-                db_password = user[0].strip()
+                db_password = user[0]
 
                 if db_password == actual:
                     cursor.execute(
@@ -129,6 +140,7 @@ def cambiar_password():
                         (nueva, session["usuario"])
                     )
                     conn.commit()
+
                     mensaje = "✅ Contraseña actualizada correctamente"
                 else:
                     mensaje = "❌ Contraseña actual incorrecta"
@@ -144,10 +156,10 @@ def cambiar_password():
     return render_template("cambiar_password.html", mensaje=mensaje)
 
 
+# 📧 RECUPERAR CONTRASEÑA
 @app.route("/recuperar", methods=["GET", "POST"])
 def recuperar():
     mensaje = ""
-    token_mostrar = ""
 
     if request.method == "POST":
         usuario = request.form.get("usuario")
@@ -156,14 +168,14 @@ def recuperar():
         cursor = conn.cursor()
 
         cursor.execute(
-            "SELECT username FROM usuarios WHERE username = ?",
+            "SELECT username, email FROM usuarios WHERE username = ?",
             (usuario,)
         )
 
         user = cursor.fetchone()
 
         if user:
-            token = secrets.token_urlsafe(16)
+            token = secrets.token_urlsafe(32)
 
             cursor.execute(
                 "UPDATE usuarios SET token = ? WHERE username = ?",
@@ -171,16 +183,35 @@ def recuperar():
             )
             conn.commit()
 
-            mensaje = "Copia este token para recuperar tu contraseña"
-            token_mostrar = token
-        else:
-            mensaje = "Usuario no existe"
+            link = url_for("reset_password", _external=True)
+
+            msg = Message(
+                subject="Recuperar contraseña",
+                sender=app.config["MAIL_USERNAME"],
+                recipients=[user[1]]
+            )
+
+            msg.body = f"""
+Hola {usuario},
+
+Usa este token para recuperar tu contraseña:
+
+TOKEN: {token}
+
+También puedes ir aquí:
+{link}
+"""
+
+            mail.send(msg)
+
+        mensaje = "📧 Si el usuario existe, revisa tu correo"
 
         conn.close()
 
-    return render_template("recuperar.html", mensaje=mensaje, token=token_mostrar)
+    return render_template("recuperar.html", mensaje=mensaje)
 
 
+# 🔑 RESET PASSWORD
 @app.route("/reset", methods=["GET", "POST"])
 def reset_password():
     mensaje = ""

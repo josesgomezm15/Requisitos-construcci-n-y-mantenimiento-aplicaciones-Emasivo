@@ -61,7 +61,6 @@
       color: #fff;
       border-radius: 6px;
       font-size: 13px;
-      text-decoration: none;
       border: none;
       cursor: pointer;
     }
@@ -76,10 +75,6 @@
       color: #555;
     }
 
-    .token-box {
-      margin-top: 15px;
-    }
-
   </style>
 </head>
 <body>
@@ -88,28 +83,17 @@
 
   <div class="header">
     <h1>Recuperar contraseña</h1>
-    <p>Genera un token para restablecer tu contraseña</p>
+    <p>Ingresa tu usuario y revisa tu correo</p>
   </div>
 
   <div class="card">
 
     <form method="POST">
       <input type="text" name="usuario" placeholder="Usuario" required>
-      <button class="btn">Generar token</button>
+      <button class="btn">Enviar enlace</button>
     </form>
 
     <p class="mensaje">{{ mensaje }}</p>
-
-    {% if token %}
-      <div class="token-box">
-        <p><strong>Token generado:</strong></p>
-        <input type="text" value="{{ token }}" readonly>
-
-        <a href="{{ url_for('reset_password') }}" class="btn">
-          Ir a cambiar contraseña
-        </a>
-      </div>
-    {% endif %}
 
   </div>
 
